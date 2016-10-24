@@ -28,7 +28,7 @@ var _ = Describe("Tests of Graph structure", func() {
 			Expect(vertex).Should(BeNil())
 		})
 
-		It("Given an empty graph, when add an vertex, then cat get the vertex by its id later", func() {
+		It("Given an empty graph, when add a vertex, then can get the vertex by its id later", func() {
 			myVertex := &myVertex{"S", map[Id]float64{"A": 10, "B": 10}, map[Id]float64{}}
 			err := graph.AddVertexWithEdges(myVertex)
 			Expect(err).ShouldNot(HaveOccurred())
@@ -37,9 +37,16 @@ var _ = Describe("Tests of Graph structure", func() {
 			Expect(vertex).Should(BeEquivalentTo(myVertex))
 		})
 
-		It("Given a graph, when add 2 vertex with same ID, then get error", func() {
+		It("Given a graph, when add vertex with same ID, then get error", func() {
 			graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"A": 10, "B": 10}, map[Id]float64{}})
 			err := graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{}, map[Id]float64{"S": 10, "B": 5}})
+			Expect(err).Should(HaveOccurred())
+		})
+
+		It("Given a graph, when add a vertex with -inf weight edge, then get error", func() {
+			err := graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"T": math.Inf(-1)}, map[Id]float64{}})
+			Expect(err).Should(HaveOccurred())
+			err = graph.AddVertexWithEdges(&myVertex{"T", map[Id]float64{}, map[Id]float64{"S": math.Inf(-1)}})
 			Expect(err).Should(HaveOccurred())
 		})
 	})
@@ -183,7 +190,15 @@ var _ = Describe("Tests of Graph structure", func() {
 			Expect(err).Should(HaveOccurred())
 		})
 
-		It("Given a graph with  S and T already connected, when add an edge from S to T again, then get an error", func() {
+		It("Given a graph with S and T connected, when add an edge from S to T with -inf weight, then get an error", func() {
+			graph.AddVertex("S", "I am vertex S")
+			graph.AddVertex("T", "I am vertex T")
+			graph.AddEdge("S", "T", 10)
+			err := graph.UpdateEdge("S", "T", math.Inf(-1))
+			Expect(err).Should(HaveOccurred())
+		})
+
+		It("Given a graph with  S and T connected, when add an edge from S to T again, then get an error", func() {
 			graph.AddVertex("S", "I am vertex S")
 			graph.AddVertex("T", "I am vertex T")
 			graph.AddEdge("S", "T", 10)
