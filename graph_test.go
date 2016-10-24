@@ -170,6 +170,16 @@ var _ = Describe("Tests of Graph structure", func() {
 			err = graph.AddEdge("S", "T", 20)
 			Expect(err).Should(HaveOccurred())
 		})
+	})
+
+	Context("update methods tests", func() {
+		BeforeEach(func() {
+			graph = NewGraph()
+		})
+
+		AfterEach(func() {
+			graph = nil
+		})
 
 		It("Given a graph without S, when update an edge from S, then get an error", func() {
 			graph.AddVertex("T", "I am vertex T")
@@ -236,6 +246,58 @@ var _ = Describe("Tests of Graph structure", func() {
 			graph.ingress["T"] = map[Id]*edge{"S": {20, true, false}}
 			err = graph.CheckIntegrity()
 			Expect(err).Should(HaveOccurred())
+		})
+	})
+
+	Context("delete methods tests", func() {
+		BeforeEach(func() {
+			graph = NewGraph()
+			graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"A": 10, "B": 10}, map[Id]float64{}})
+			graph.AddVertexWithEdges(&myVertex{"A", map[Id]float64{}, map[Id]float64{"S": 10, "B": 5}})
+			graph.AddVertexWithEdges(&myVertex{"B", map[Id]float64{"A": 5}, map[Id]float64{"S": 10}})
+		})
+
+		AfterEach(func() {
+			graph = nil
+		})
+
+		It("Given a graph without vertex T, when delete vertex T, then get an nil", func() {
+			v := graph.DeleteVertex("T")
+			Expect(v).Should(BeNil())
+		})
+
+		It("Given a graph with vertex S, when delete vertex S, then get S and can not get S later", func() {
+			v := graph.DeleteVertex("S")
+			Expect(v).Should(BeEquivalentTo(&myVertex{"S", map[Id]float64{"A": 10, "B": 10}, map[Id]float64{}}))
+			_, err := graph.GetVertex("S")
+			Expect(err).Should(HaveOccurred())
+			err = graph.CheckIntegrity()
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+
+		It("Given a graph without vertex T, when delete edge from/to vertex T, then nothing happens", func() {
+			graph.DeleteEdge("T", "S")
+			_, err := graph.GetVertex("S")
+			Expect(err).ShouldNot(HaveOccurred())
+			err = graph.CheckIntegrity()
+			Expect(err).ShouldNot(HaveOccurred())
+			_, err = graph.GetVertex("S")
+			Expect(err).ShouldNot(HaveOccurred())
+			graph.DeleteEdge("S", "T")
+			_, err = graph.GetVertex("S")
+			Expect(err).ShouldNot(HaveOccurred())
+			err = graph.CheckIntegrity()
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+
+		It("Given a graph without vertex A and B connected, when delete edge between A and B, then the weight between A and B will be +inf", func() {
+			weight, _ := graph.GetEdge("B", "A")
+			Expect(weight).Should(BeEquivalentTo(5))
+			graph.DeleteEdge("B", "A")
+			weight, _ = graph.GetEdge("B", "A")
+			Expect(weight).Should(BeEquivalentTo(math.Inf(1)))
+			err := graph.CheckIntegrity()
+			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
 })

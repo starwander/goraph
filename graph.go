@@ -127,6 +127,39 @@ func (graph *Graph) UpdateEdge(from Id, to Id, weight float64) error {
 	return fmt.Errorf("Edge from %v to %v is not found", from, to)
 }
 
+func (graph *Graph) DeleteVertex(id Id) interface{} {
+	if vertex, exists := graph.vertices[id]; exists {
+		for to := range graph.egress[id] {
+			delete(graph.ingress[to], id)
+		}
+		for from := range graph.ingress[id] {
+			delete(graph.egress[from], id)
+		}
+		delete(graph.egress, id)
+		delete(graph.ingress, id)
+		delete(graph.vertices, id)
+
+		return vertex.this
+	}
+
+	return nil
+}
+
+func (graph *Graph) DeleteEdge(from Id, to Id) {
+	if _, exists := graph.vertices[from]; !exists {
+		return
+	}
+
+	if _, exists := graph.vertices[to]; !exists {
+		return
+	}
+
+	if _, exists := graph.egress[from][to]; exists {
+		delete(graph.egress[from], to)
+		delete(graph.ingress[to], from)
+	}
+}
+
 func (graph *Graph) AddVertexWithEdges(v Vertex) error {
 	if _, exists := graph.vertices[v.Id()]; exists {
 		return fmt.Errorf("Vertex %v is duplicate", v.Id())
