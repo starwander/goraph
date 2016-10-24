@@ -229,6 +229,13 @@ var _ = Describe("Tests of Graph structure", func() {
 			graph.AddVertexWithEdges(&myVertex{"B", map[Id]float64{"A": 5}, map[Id]float64{"S": 10}})
 			err = graph.CheckIntegrity()
 			Expect(err).ShouldNot(HaveOccurred())
+			graph.ingress["S"]["T"] = &edge{20, true, false}
+			err = graph.CheckIntegrity()
+			Expect(err).Should(HaveOccurred())
+			delete(graph.ingress["S"], "T")
+			graph.ingress["T"] = map[Id]*edge{"S": {20, true, false}}
+			err = graph.CheckIntegrity()
+			Expect(err).Should(HaveOccurred())
 		})
 	})
 })
