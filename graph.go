@@ -4,6 +4,7 @@ package goraph
 
 import (
 	"fmt"
+	"math"
 )
 
 type Id interface{}
@@ -15,9 +16,7 @@ type Vertex interface {
 }
 
 type Edge interface {
-	From() Id
-	To() Id
-	Weight() float64
+	Get() (from Id, to Id, weight float64)
 }
 
 type Graph struct {
@@ -27,13 +26,14 @@ type Graph struct {
 }
 
 type vertex struct {
-	this   Vertex
+	this   interface{}
 	enable bool
 }
 
 type edge struct {
-	weight float64
-	enable bool
+	weight  float64
+	enable  bool
+	changed bool
 }
 
 func NewGraph() *Graph {
@@ -45,7 +45,7 @@ func NewGraph() *Graph {
 	return graph
 }
 
-func (graph *Graph) GetVertex(id Id) (vertex Vertex, err error) {
+func (graph *Graph) GetVertex(id Id) (vertex interface{}, err error) {
 	if v, exists := graph.vertices[id]; exists {
 		vertex = v.this
 		return
@@ -55,7 +55,79 @@ func (graph *Graph) GetVertex(id Id) (vertex Vertex, err error) {
 	return
 }
 
-func (graph *Graph) AddVertex(v Vertex) error {
+func (graph *Graph) GetEdge(from Id, to Id) (float64, error) {
+	if _, exists := graph.vertices[from]; !exists {
+		return math.Inf(1), fmt.Errorf("Vertex(from) %v is not found", from)
+	}
+
+	if _, exists := graph.vertices[to]; !exists {
+		return math.Inf(1), fmt.Errorf("Vertex(to) %v is not found", to)
+	}
+
+	if edge, exists := graph.egress[from][to]; exists {
+		return edge.weight, nil
+	}
+
+	return math.Inf(1), nil
+}
+
+func (graph *Graph) AddVertex(id Id, v interface{}) error {
+	if _, exists := graph.vertices[id]; exists {
+		return fmt.Errorf("Vertex %v is duplicate", id)
+	}
+
+	graph.vertices[id] = &vertex{v, true}
+	graph.egress[id] = make(map[Id]*edge)
+	graph.ingress[id] = make(map[Id]*edge)
+
+	return nil
+}
+
+func (graph *Graph) AddEdge(from Id, to Id, weight float64) error {
+	if weight == math.Inf(-1) {
+		return fmt.Errorf("-inf weight is reserved for internal usage")
+	}
+
+	if _, exists := graph.vertices[from]; !exists {
+		return fmt.Errorf("Vertex(from) %v is not found", from)
+	}
+
+	if _, exists := graph.vertices[to]; !exists {
+		return fmt.Errorf("Vertex(to) %v is not found", to)
+	}
+
+	if _, exists := graph.egress[from][to]; exists {
+		return fmt.Errorf("Edge from %v to %v is duplicate", from, to)
+	}
+
+	graph.egress[from][to] = &edge{weight, true, false}
+	graph.ingress[to][from] = graph.egress[from][to]
+
+	return nil
+}
+
+func (graph *Graph) UpdateEdge(from Id, to Id, weight float64) error {
+	if weight == math.Inf(-1) {
+		return fmt.Errorf("-inf weight is reserved for internal usage")
+	}
+
+	if _, exists := graph.vertices[from]; !exists {
+		return fmt.Errorf("Vertex(from) %v is not found", from)
+	}
+
+	if _, exists := graph.vertices[to]; !exists {
+		return fmt.Errorf("Vertex(to) %v is not found", to)
+	}
+
+	if edge, exists := graph.egress[from][to]; exists {
+		edge.weight = weight
+		return nil
+	}
+
+	return fmt.Errorf("Edge from %v to %v is not found", from, to)
+}
+
+func (graph *Graph) AddVertexWithEdges(v Vertex) error {
 	if _, exists := graph.vertices[v.Id()]; exists {
 		return fmt.Errorf("Vertex %v is duplicate", v.Id())
 	}
@@ -65,7 +137,11 @@ func (graph *Graph) AddVertex(v Vertex) error {
 	graph.ingress[v.Id()] = make(map[Id]*edge)
 
 	for outTo, weight := range v.Out() {
-		graph.egress[v.Id()][outTo] = &edge{weight, true}
+		if weight == math.Inf(-1) {
+			return fmt.Errorf("-inf weight is reserved for internal usage")
+		}
+
+		graph.egress[v.Id()][outTo] = &edge{weight, true, false}
 		if _, exists := graph.ingress[outTo]; !exists {
 			graph.ingress[outTo] = make(map[Id]*edge)
 		}
@@ -73,7 +149,11 @@ func (graph *Graph) AddVertex(v Vertex) error {
 	}
 
 	for inFrom, weight := range v.In() {
-		graph.ingress[v.Id()][inFrom] = &edge{weight, true}
+		if weight == math.Inf(-1) {
+			return fmt.Errorf("-inf weight is reserved for internal usage")
+		}
+
+		graph.ingress[v.Id()][inFrom] = &edge{weight, true, false}
 		if _, exists := graph.egress[inFrom]; !exists {
 			graph.egress[inFrom] = make(map[Id]*edge)
 		}
