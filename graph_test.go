@@ -273,6 +273,12 @@ var _ = Describe("Tests of Graph structure", func() {
 			Expect(err).Should(HaveOccurred())
 			err = graph.CheckIntegrity()
 			Expect(err).ShouldNot(HaveOccurred())
+			v = graph.DeleteVertex("A")
+			Expect(v).Should(BeEquivalentTo(&myVertex{"A", map[Id]float64{}, map[Id]float64{"S": 10, "B": 5}}))
+			_, err = graph.GetVertex("A")
+			Expect(err).Should(HaveOccurred())
+			err = graph.CheckIntegrity()
+			Expect(err).ShouldNot(HaveOccurred())
 		})
 
 		It("Given a graph without vertex T, when delete edge from/to vertex T, then nothing happens", func() {
