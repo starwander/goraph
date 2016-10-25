@@ -58,6 +58,9 @@ func (graph *Graph) Dijkstra(source Id) (dist map[Id]float64, prev map[Id]Id, er
 			if edge.weight < 0 {
 				return nil, nil, fmt.Errorf("Negative weight form vertex %v to vertex %v is not allowed", min, to)
 			}
+			if !edge.enable {
+				continue
+			}
 			if dist[min]+edge.weight < dist[to] {
 				heap.DecreaseKey(to, dist[min]+edge.weight)
 				prev[to] = min
