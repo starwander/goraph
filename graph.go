@@ -221,3 +221,22 @@ func (graph *Graph) CheckIntegrity() error {
 
 	return nil
 }
+
+func (graph *Graph) GetPathWeight(path []Id) (totalWeight float64) {
+	if len(path) < 2 {
+		return math.Inf(-1)
+	}
+
+	for i := 0; i < len(path)-1; i++ {
+		if _, exists := graph.vertices[path[i]]; !exists {
+			return math.Inf(-1)
+		}
+		if edge, exists := graph.egress[path[i]][path[i+1]]; exists {
+			totalWeight += edge.weight
+		} else {
+			return math.Inf(1)
+		}
+	}
+
+	return totalWeight
+}

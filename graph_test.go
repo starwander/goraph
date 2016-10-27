@@ -310,4 +310,37 @@ var _ = Describe("Tests of Graph structure", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
+
+	Context("get total weight of path tests", func() {
+		BeforeEach(func() {
+			graph = NewGraph()
+			graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"A": 10, "B": 10}, map[Id]float64{}})
+			graph.AddVertexWithEdges(&myVertex{"A", map[Id]float64{}, map[Id]float64{"S": 10, "B": 5}})
+			graph.AddVertexWithEdges(&myVertex{"B", map[Id]float64{"A": 5}, map[Id]float64{"S": 10}})
+		})
+
+		AfterEach(func() {
+			graph = nil
+		})
+
+		It("Given an empty path, when get its weight, then get -inf", func() {
+			path := []Id{}
+			Expect(graph.GetPathWeight(path)).Should(BeEquivalentTo(math.Inf(-1)))
+		})
+
+		It("Given a path only have one vertex, when get its weight, then get -inf", func() {
+			path := []Id{"T"}
+			Expect(graph.GetPathWeight(path)).Should(BeEquivalentTo(math.Inf(-1)))
+		})
+
+		It("Given a path with vertex disconnected, when get its weight, then get +inf", func() {
+			path := []Id{"B", "A", "S"}
+			Expect(graph.GetPathWeight(path)).Should(BeEquivalentTo(math.Inf(1)))
+		})
+
+		It("Given a path with all vertex connected, when get its weight, then get the end to end weight of the path", func() {
+			path := []Id{"S", "B", "A"}
+			Expect(graph.GetPathWeight(path)).Should(BeEquivalentTo(15))
+		})
+	})
 })
