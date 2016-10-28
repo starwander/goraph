@@ -55,6 +55,7 @@ var _ = Describe("Tests of Dijkstra", func() {
 			graph.AddVertexWithEdges(&myVertex{"E", map[Id]float64{"B": 18, "C": 24, "D": 2, "F": 6, "T": 19}, map[Id]float64{"B": 18, "C": 24, "D": 2, "F": 6, "T": 19}})
 			graph.AddVertexWithEdges(&myVertex{"F", map[Id]float64{"D": 11, "E": 6, "T": 6}, map[Id]float64{"D": 11, "E": 6, "T": 6}})
 			graph.AddVertexWithEdges(&myVertex{"T", map[Id]float64{"A": 44, "D": 16, "E": 19, "F": 6}, map[Id]float64{"A": 44, "D": 16, "E": 19, "F": 6}})
+			Expect(graph.CheckIntegrity()).ShouldNot(HaveOccurred())
 		})
 
 		AfterEach(func() {

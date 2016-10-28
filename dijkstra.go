@@ -55,16 +55,16 @@ func (graph *Graph) Dijkstra(source Id) (dist map[Id]float64, prev map[Id]Id, er
 	for heap.Num() != 0 {
 		min, _ := heap.ExtractMin()
 		for to, edge := range graph.egress[min] {
-			if edge.weight < 0 {
+			if edge.getWeight() < 0 {
 				return nil, nil, fmt.Errorf("Negative weight form vertex %v to vertex %v is not allowed", min, to)
 			}
 			if !edge.enable {
 				continue
 			}
-			if dist[min]+edge.weight < dist[to] {
-				heap.DecreaseKey(to, dist[min]+edge.weight)
+			if dist[min]+edge.getWeight() < dist[to] {
+				heap.DecreaseKey(to, dist[min]+edge.getWeight())
 				prev[to] = min
-				dist[to] = dist[min] + edge.weight
+				dist[to] = dist[min] + edge.getWeight()
 			}
 		}
 	}

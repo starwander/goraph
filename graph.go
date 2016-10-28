@@ -36,6 +36,10 @@ type edge struct {
 	changed bool
 }
 
+func (edge *edge) getWeight() float64 {
+	return edge.weight
+}
+
 func NewGraph() *Graph {
 	graph := new(Graph)
 	graph.vertices = make(map[Id]*vertex)
@@ -223,7 +227,7 @@ func (graph *Graph) CheckIntegrity() error {
 }
 
 func (graph *Graph) GetPathWeight(path []Id) (totalWeight float64) {
-	if len(path) < 2 {
+	if len(path) == 0 {
 		return math.Inf(-1)
 	}
 
@@ -232,11 +236,35 @@ func (graph *Graph) GetPathWeight(path []Id) (totalWeight float64) {
 			return math.Inf(-1)
 		}
 		if edge, exists := graph.egress[path[i]][path[i+1]]; exists {
-			totalWeight += edge.weight
+			totalWeight += edge.getWeight()
 		} else {
 			return math.Inf(1)
 		}
 	}
 
 	return totalWeight
+}
+
+func (graph *Graph) DisableEdge(from, to Id) {
+	graph.egress[from][to].enable = false
+}
+
+func (graph *Graph) DisableVertex(vertex Id) {
+	for _, edge := range graph.egress[vertex] {
+		edge.enable = false
+	}
+}
+
+func (graph *Graph) DisablePath(vertices []Id) {
+	for _, vertex := range vertices {
+		graph.DisableVertex(vertex)
+	}
+}
+
+func (graph *Graph) Reset() {
+	for _, out := range graph.egress {
+		for _, edge := range out {
+			edge.enable = true
+		}
+	}
 }

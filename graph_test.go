@@ -330,7 +330,7 @@ var _ = Describe("Tests of Graph structure", func() {
 
 		It("Given a path only have one vertex, when get its weight, then get -inf", func() {
 			path := []Id{"T"}
-			Expect(graph.GetPathWeight(path)).Should(BeEquivalentTo(math.Inf(-1)))
+			Expect(graph.GetPathWeight(path)).Should(BeEquivalentTo(0))
 		})
 
 		It("Given a path with vertex disconnected, when get its weight, then get +inf", func() {
