@@ -231,8 +231,12 @@ func (graph *Graph) GetPathWeight(path []Id) (totalWeight float64) {
 		return math.Inf(-1)
 	}
 
+	if _, exists := graph.vertices[path[0]]; !exists {
+		return math.Inf(-1)
+	}
+
 	for i := 0; i < len(path)-1; i++ {
-		if _, exists := graph.vertices[path[i]]; !exists {
+		if _, exists := graph.vertices[path[i+1]]; !exists {
 			return math.Inf(-1)
 		}
 		if edge, exists := graph.egress[path[i]][path[i+1]]; exists {

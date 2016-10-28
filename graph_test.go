@@ -328,8 +328,15 @@ var _ = Describe("Tests of Graph structure", func() {
 			Expect(graph.GetPathWeight(path)).Should(BeEquivalentTo(math.Inf(-1)))
 		})
 
-		It("Given a path only have one vertex, when get its weight, then get -inf", func() {
+		It("Given a path contains unexisted vertex, when get its weight, then get -inf", func() {
 			path := []Id{"T"}
+			Expect(graph.GetPathWeight(path)).Should(BeEquivalentTo(math.Inf(-1)))
+			path = []Id{"S", "A", "T"}
+			Expect(graph.GetPathWeight(path)).Should(BeEquivalentTo(math.Inf(-1)))
+		})
+
+		It("Given a path only have one vertex, when get its weight, then get 0", func() {
+			path := []Id{"S"}
 			Expect(graph.GetPathWeight(path)).Should(BeEquivalentTo(0))
 		})
 
