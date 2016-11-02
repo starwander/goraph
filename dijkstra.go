@@ -71,3 +71,22 @@ func (graph *Graph) Dijkstra(source Id) (dist map[Id]float64, prev map[Id]Id, er
 
 	return
 }
+
+func getPath(prev map[Id]Id, lastNode Id) (path []Id) {
+	prevNode := prev[lastNode]
+	if prevNode == nil {
+		return nil
+	}
+
+	reversePath := []Id{lastNode}
+	for ; prevNode != nil; prevNode = prev[prevNode] {
+		reversePath = append(reversePath, prevNode)
+	}
+
+	path = make([]Id, len(reversePath))
+	for index, node := range reversePath {
+		path[len(reversePath)-index-1] = node
+	}
+
+	return
+}

@@ -5,6 +5,7 @@ package goraph
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"math"
 )
 
 var _ = Describe("Tests of Yen", func() {
@@ -46,7 +47,7 @@ var _ = Describe("Tests of Yen", func() {
 		})
 
 		It("Given a non-negative edge graph, when call yen api, then get the top k shortest paths from the source vertex to the destination vertex in the graph.", func() {
-			dist, path, err := graph.Yen("C", "H", 3)
+			dist, path, err := graph.Yen("C", "H", 6)
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(dist[0]).Should(BeEquivalentTo(5))
 			Expect(path[0]).Should(BeEquivalentTo([]Id{"C", "E", "F", "H"}))
@@ -54,6 +55,12 @@ var _ = Describe("Tests of Yen", func() {
 			Expect(path[1]).Should(BeEquivalentTo([]Id{"C", "E", "G", "H"}))
 			Expect(dist[2]).Should(BeEquivalentTo(8))
 			Expect(path[2]).Should(BeEquivalentTo([]Id{"C", "D", "F", "H"}))
+			Expect(dist[3]).Should(BeEquivalentTo(11))
+			Expect(path[3]).Should(BeEquivalentTo([]Id{"C", "D", "F", "G", "H"}))
+			Expect(dist[4]).Should(BeEquivalentTo(math.Inf(1)))
+			Expect(path[4]).Should(BeNil())
+			Expect(dist[5]).Should(BeEquivalentTo(math.Inf(1)))
+			Expect(path[5]).Should(BeNil())
 		})
 	})
 })

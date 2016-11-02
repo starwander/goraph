@@ -49,20 +49,6 @@ func (graph *Graph) Yen(source, destination Id, topK int) ([]float64, [][]Id, er
 	return distTopK, pathTopK, nil
 }
 
-func getPath(prev map[Id]Id, lastNode Id) (path []Id) {
-	reversePath := []Id{lastNode}
-	for prevNode := prev[lastNode]; prevNode != nil; prevNode = prev[prevNode] {
-		reversePath = append(reversePath, prevNode)
-	}
-
-	path = make([]Id, len(reversePath))
-	for index, node := range reversePath {
-		path[len(reversePath)-index-1] = node
-	}
-
-	return
-}
-
 func isShareRootPath(path, rootPath []Id) bool {
 	if len(path) < len(rootPath) {
 		return false
