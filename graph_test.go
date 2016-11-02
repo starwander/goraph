@@ -91,36 +91,45 @@ var _ = Describe("Tests of Graph structure", func() {
 			graph = nil
 		})
 
-		It("Given a graph without vertex S, when get the edge from S, then get +inf and an error", func() {
+		It("Given a graph without vertex S, when get the edge(weight) from S, then get +inf and an error", func() {
 			graph.AddVertexWithEdges(&myVertex{"A", map[Id]float64{}, map[Id]float64{"T": 10}})
 			graph.AddVertexWithEdges(&myVertex{"T", map[Id]float64{"T": 10}, map[Id]float64{}})
+			weight, err := graph.GetEdgeWeight("S", "T")
+			Expect(err).Should(HaveOccurred())
+			Expect(weight).Should(BeEquivalentTo(math.Inf(1)))
 			edge, err := graph.GetEdge("S", "T")
 			Expect(err).Should(HaveOccurred())
-			Expect(edge).Should(BeEquivalentTo(math.Inf(1)))
+			Expect(edge).Should(BeNil())
 		})
 
-		It("Given a graph without vertex T, when get the edge to T, then get +inf and an error", func() {
+		It("Given a graph without vertex T, when get the edge(weight) to T, then get +inf and an error", func() {
 			graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"T": 10}, map[Id]float64{}})
 			graph.AddVertexWithEdges(&myVertex{"B", map[Id]float64{}, map[Id]float64{"T": 10}})
+			weight, err := graph.GetEdgeWeight("S", "T")
+			Expect(err).Should(HaveOccurred())
+			Expect(weight).Should(BeEquivalentTo(math.Inf(1)))
 			edge, err := graph.GetEdge("S", "T")
 			Expect(err).Should(HaveOccurred())
-			Expect(edge).Should(BeEquivalentTo(math.Inf(1)))
+			Expect(edge).Should(BeNil())
 		})
 
-		It("Given a graph with S and T disconnected, when get the edge from S to T, then get +inf without error", func() {
+		It("Given a graph with S and T disconnected, when get the edge(weight) from S to T, then get +inf without error", func() {
 			graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"A": 10}, map[Id]float64{"A": 10}})
 			graph.AddVertexWithEdges(&myVertex{"A", map[Id]float64{"S": 10}, map[Id]float64{"S": 10}})
 			graph.AddVertexWithEdges(&myVertex{"B", map[Id]float64{"T": 10}, map[Id]float64{"T": 10}})
 			graph.AddVertexWithEdges(&myVertex{"T", map[Id]float64{"B": 10}, map[Id]float64{"B": 10}})
-			edge, err := graph.GetEdge("S", "T")
+			weight, err := graph.GetEdgeWeight("S", "T")
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(edge).Should(BeEquivalentTo(math.Inf(1)))
+			Expect(weight).Should(BeEquivalentTo(math.Inf(1)))
+			edge, err := graph.GetEdge("S", "T")
+			Expect(err).Should(HaveOccurred())
+			Expect(edge).Should(BeNil())
 		})
 
 		It("Given a graph with S and T connected, when get the edge from S to T, then get its weight without error", func() {
 			graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"T": 10}, map[Id]float64{"T": 10}})
 			graph.AddVertexWithEdges(&myVertex{"T", map[Id]float64{"S": 10}, map[Id]float64{"S": 10}})
-			edge, err := graph.GetEdge("S", "T")
+			edge, err := graph.GetEdgeWeight("S", "T")
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(edge).Should(BeEquivalentTo(10))
 		})
@@ -128,47 +137,57 @@ var _ = Describe("Tests of Graph structure", func() {
 		It("Given a graph with S and T connected, when get the edge from S to T, then get its weight without error", func() {
 			graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"T": 10}, map[Id]float64{"T": 10}})
 			graph.AddVertexWithEdges(&myVertex{"T", map[Id]float64{"S": 10}, map[Id]float64{"S": 10}})
-			edge, err := graph.GetEdge("S", "T")
+			edge, err := graph.GetEdgeWeight("S", "T")
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(edge).Should(BeEquivalentTo(10))
 		})
 
 		It("Given a graph without S, when add an edge from S, then get an error", func() {
 			graph.AddVertex("T", "I am vertex T")
-			err := graph.AddEdge("S", "T", 10)
+			err := graph.AddEdge("S", "T", 10, nil)
 			Expect(err).Should(HaveOccurred())
 		})
 
 		It("Given a graph without T, when add an edge to T, then get an error", func() {
 			graph.AddVertex("S", "I am vertex S")
-			err := graph.AddEdge("S", "T", 10)
+			err := graph.AddEdge("S", "T", 10, nil)
 			Expect(err).Should(HaveOccurred())
 		})
 
-		It("Given a graph with S and T disconnected, when add an edge from S to T with -inf weight, then get an error", func() {
+		It("Given a graph with S and T disconnected, when add an edge weight from S to T with -inf weight, then get an error", func() {
 			graph.AddVertex("S", "I am vertex S")
 			graph.AddVertex("T", "I am vertex T")
-			err := graph.AddEdge("S", "T", math.Inf(-1))
+			err := graph.AddEdge("S", "T", math.Inf(-1), nil)
+			Expect(err).Should(HaveOccurred())
+		})
+
+		It("Given a graph with S and T disconnected, when add an edge weight from S to T, then get nil error", func() {
+			graph.AddVertex("S", "I am vertex S")
+			graph.AddVertex("T", "I am vertex T")
+			err := graph.AddEdge("S", "T", 10, nil)
+			Expect(err).ShouldNot(HaveOccurred())
+			edge, err := graph.GetEdgeWeight("S", "T")
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(edge).Should(BeEquivalentTo(10))
+		})
+
+		It("Given a graph with S and T already connected, when add an edge weight from S to T again, then get an error", func() {
+			graph.AddVertex("S", "I am vertex S")
+			graph.AddVertex("T", "I am vertex T")
+			err := graph.AddEdge("S", "T", 10, nil)
+			Expect(err).ShouldNot(HaveOccurred())
+			err = graph.AddEdge("S", "T", 20, nil)
 			Expect(err).Should(HaveOccurred())
 		})
 
 		It("Given a graph with S and T disconnected, when add an edge from S to T, then get nil error", func() {
 			graph.AddVertex("S", "I am vertex S")
 			graph.AddVertex("T", "I am vertex T")
-			err := graph.AddEdge("S", "T", 10)
+			err := graph.AddEdge("S", "T", 10, "I am an edge")
 			Expect(err).ShouldNot(HaveOccurred())
 			edge, err := graph.GetEdge("S", "T")
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(edge).Should(BeEquivalentTo(10))
-		})
-
-		It("Given a graph with S and T already connected, when add an edge from S to T again, then get an error", func() {
-			graph.AddVertex("S", "I am vertex S")
-			graph.AddVertex("T", "I am vertex T")
-			err := graph.AddEdge("S", "T", 10)
-			Expect(err).ShouldNot(HaveOccurred())
-			err = graph.AddEdge("S", "T", 20)
-			Expect(err).Should(HaveOccurred())
+			Expect(edge.(string)).Should(BeEquivalentTo("I am an edge"))
 		})
 	})
 
@@ -203,7 +222,7 @@ var _ = Describe("Tests of Graph structure", func() {
 		It("Given a graph with S and T connected, when add an edge from S to T with -inf weight, then get an error", func() {
 			graph.AddVertex("S", "I am vertex S")
 			graph.AddVertex("T", "I am vertex T")
-			graph.AddEdge("S", "T", 10)
+			graph.AddEdge("S", "T", 10, nil)
 			err := graph.UpdateEdge("S", "T", math.Inf(-1))
 			Expect(err).Should(HaveOccurred())
 		})
@@ -211,10 +230,10 @@ var _ = Describe("Tests of Graph structure", func() {
 		It("Given a graph with  S and T connected, when add an edge from S to T again, then get an error", func() {
 			graph.AddVertex("S", "I am vertex S")
 			graph.AddVertex("T", "I am vertex T")
-			graph.AddEdge("S", "T", 10)
+			graph.AddEdge("S", "T", 10, nil)
 			err := graph.UpdateEdge("S", "T", 20)
 			Expect(err).ShouldNot(HaveOccurred())
-			edge, err := graph.GetEdge("S", "T")
+			edge, err := graph.GetEdgeWeight("S", "T")
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(edge).Should(BeEquivalentTo(20))
 		})
@@ -239,15 +258,15 @@ var _ = Describe("Tests of Graph structure", func() {
 			graph.AddVertexWithEdges(&myVertex{"B", map[Id]float64{"A": 5}, map[Id]float64{"S": 10}})
 			err = graph.CheckIntegrity()
 			Expect(err).ShouldNot(HaveOccurred())
-			graph.egress["C"] = map[Id]*edge{"B": {15, true, false}}
+			graph.egress["C"] = map[Id]*edge{"B": {nil, 15, true, false}}
 			err = graph.CheckIntegrity()
 			Expect(err).Should(HaveOccurred())
 			delete(graph.egress, "C")
-			graph.ingress["S"]["T"] = &edge{20, true, false}
+			graph.ingress["S"]["T"] = &edge{nil, 20, true, false}
 			err = graph.CheckIntegrity()
 			Expect(err).Should(HaveOccurred())
 			delete(graph.ingress["S"], "T")
-			graph.ingress["T"] = map[Id]*edge{"S": {20, true, false}}
+			graph.ingress["T"] = map[Id]*edge{"S": {nil, 20, true, false}}
 			err = graph.CheckIntegrity()
 			Expect(err).Should(HaveOccurred())
 		})
@@ -300,11 +319,20 @@ var _ = Describe("Tests of Graph structure", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 
-		It("Given a graph without vertex A and B connected, when delete edge between A and B, then the weight between A and B will be +inf", func() {
-			weight, _ := graph.GetEdge("B", "A")
+		It("Given a graph without edge from vertex A to S, when delete edge from A to S, then nothing happens", func() {
+			weight, _ := graph.GetEdgeWeight("A", "S")
+			Expect(weight).Should(BeEquivalentTo(math.Inf(1)))
+			edge := graph.DeleteEdge("A", "S")
+			Expect(edge).Should(BeNil())
+			err := graph.CheckIntegrity()
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+
+		It("Given a graph with edge from vertex A to  B, when delete edge from A to B, then the weight between A and B will be +inf", func() {
+			weight, _ := graph.GetEdgeWeight("B", "A")
 			Expect(weight).Should(BeEquivalentTo(5))
 			graph.DeleteEdge("B", "A")
-			weight, _ = graph.GetEdge("B", "A")
+			weight, _ = graph.GetEdgeWeight("B", "A")
 			Expect(weight).Should(BeEquivalentTo(math.Inf(1)))
 			err := graph.CheckIntegrity()
 			Expect(err).ShouldNot(HaveOccurred())

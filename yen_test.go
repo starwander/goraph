@@ -36,7 +36,7 @@ var _ = Describe("Tests of Yen", func() {
 		})
 
 		It("Given a graph with negative edge, when call yen api, then get error.", func() {
-			graph.AddEdge("F", "E", -1)
+			graph.AddEdge("F", "E", -1, nil)
 			Expect(graph.CheckIntegrity()).ShouldNot(HaveOccurred())
 
 			dist, path, err := graph.Yen("C", "H", 3)

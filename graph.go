@@ -26,11 +26,12 @@ type Graph struct {
 }
 
 type vertex struct {
-	this   interface{}
+	self   interface{}
 	enable bool
 }
 
 type edge struct {
+	self    interface{}
 	weight  float64
 	enable  bool
 	changed bool
@@ -51,7 +52,7 @@ func NewGraph() *Graph {
 
 func (graph *Graph) GetVertex(id Id) (vertex interface{}, err error) {
 	if v, exists := graph.vertices[id]; exists {
-		vertex = v.this
+		vertex = v.self
 		return
 	}
 
@@ -59,7 +60,23 @@ func (graph *Graph) GetVertex(id Id) (vertex interface{}, err error) {
 	return
 }
 
-func (graph *Graph) GetEdge(from Id, to Id) (float64, error) {
+func (graph *Graph) GetEdge(from Id, to Id) (interface{}, error) {
+	if _, exists := graph.vertices[from]; !exists {
+		return nil, fmt.Errorf("Vertex(from) %v is not found", from)
+	}
+
+	if _, exists := graph.vertices[to]; !exists {
+		return nil, fmt.Errorf("Vertex(to) %v is not found", to)
+	}
+
+	if edge, exists := graph.egress[from][to]; exists {
+		return edge.self, nil
+	}
+
+	return nil, fmt.Errorf("Edge from %v to %v is not found", from, to)
+}
+
+func (graph *Graph) GetEdgeWeight(from Id, to Id) (float64, error) {
 	if _, exists := graph.vertices[from]; !exists {
 		return math.Inf(1), fmt.Errorf("Vertex(from) %v is not found", from)
 	}
@@ -87,7 +104,7 @@ func (graph *Graph) AddVertex(id Id, v interface{}) error {
 	return nil
 }
 
-func (graph *Graph) AddEdge(from Id, to Id, weight float64) error {
+func (graph *Graph) AddEdge(from Id, to Id, weight float64, e interface{}) error {
 	if weight == math.Inf(-1) {
 		return fmt.Errorf("-inf weight is reserved for internal usage")
 	}
@@ -104,7 +121,7 @@ func (graph *Graph) AddEdge(from Id, to Id, weight float64) error {
 		return fmt.Errorf("Edge from %v to %v is duplicate", from, to)
 	}
 
-	graph.egress[from][to] = &edge{weight, true, false}
+	graph.egress[from][to] = &edge{e, weight, true, false}
 	graph.ingress[to][from] = graph.egress[from][to]
 
 	return nil
@@ -143,25 +160,28 @@ func (graph *Graph) DeleteVertex(id Id) interface{} {
 		delete(graph.ingress, id)
 		delete(graph.vertices, id)
 
-		return vertex.this
+		return vertex.self
 	}
 
 	return nil
 }
 
-func (graph *Graph) DeleteEdge(from Id, to Id) {
+func (graph *Graph) DeleteEdge(from Id, to Id) interface{} {
 	if _, exists := graph.vertices[from]; !exists {
-		return
+		return nil
 	}
 
 	if _, exists := graph.vertices[to]; !exists {
-		return
+		return nil
 	}
 
-	if _, exists := graph.egress[from][to]; exists {
+	if edge, exists := graph.egress[from][to]; exists {
 		delete(graph.egress[from], to)
 		delete(graph.ingress[to], from)
+		return edge.self
 	}
+
+	return nil
 }
 
 func (graph *Graph) AddVertexWithEdges(v Vertex) error {
@@ -178,7 +198,7 @@ func (graph *Graph) AddVertexWithEdges(v Vertex) error {
 			return fmt.Errorf("-inf weight is reserved for internal usage")
 		}
 
-		graph.egress[v.Id()][outTo] = &edge{weight, true, false}
+		graph.egress[v.Id()][outTo] = &edge{nil, weight, true, false}
 		if _, exists := graph.ingress[outTo]; !exists {
 			graph.ingress[outTo] = make(map[Id]*edge)
 		}
@@ -190,7 +210,7 @@ func (graph *Graph) AddVertexWithEdges(v Vertex) error {
 			return fmt.Errorf("-inf weight is reserved for internal usage")
 		}
 
-		graph.ingress[v.Id()][inFrom] = &edge{weight, true, false}
+		graph.ingress[v.Id()][inFrom] = &edge{nil, weight, true, false}
 		if _, exists := graph.egress[inFrom]; !exists {
 			graph.egress[inFrom] = make(map[Id]*edge)
 		}
