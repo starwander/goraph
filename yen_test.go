@@ -46,7 +46,7 @@ var _ = Describe("Tests of Yen", func() {
 			Expect(path).Should(BeNil())
 		})
 
-		It("Given a non-negative edge graph, when call yen api, then get the top k shortest paths from the source vertex to the destination vertex in the graph.", func() {
+		It("Given a graph without negative edge, when call yen api, then get the top k shortest paths from the source vertex to the destination vertex in the graph.", func() {
 			dist, path, err := graph.Yen("C", "H", 6)
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(dist[0]).Should(BeEquivalentTo(5))
@@ -61,6 +61,29 @@ var _ = Describe("Tests of Yen", func() {
 			Expect(path[4]).Should(BeNil())
 			Expect(dist[5]).Should(BeEquivalentTo(math.Inf(1)))
 			Expect(path[5]).Should(BeNil())
+		})
+
+		It("Given another graph without negative edge, when call yen api, then get the top k shortest paths from the source vertex to the destination vertex in the graph.", func() {
+			mygraph := NewGraph()
+			mygraph.AddVertex("A", nil)
+			mygraph.AddVertex("B", nil)
+			mygraph.AddVertex("C", nil)
+			mygraph.AddVertex("D", nil)
+			mygraph.AddVertex("E", nil)
+			mygraph.AddEdge("A", "B", 1, nil)
+			mygraph.AddEdge("B", "C", 1, nil)
+			mygraph.AddEdge("C", "D", 1, nil)
+			mygraph.AddEdge("A", "D", 2, nil)
+			mygraph.AddEdge("B", "E", 2, nil)
+			mygraph.AddEdge("E", "D", 1, nil)
+			dist, path, err := mygraph.Yen("A", "D", 3)
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(dist[0]).Should(BeEquivalentTo(2))
+			Expect(path[0]).Should(BeEquivalentTo([]Id{"A", "D"}))
+			Expect(dist[1]).Should(BeEquivalentTo(3))
+			Expect(path[1]).Should(BeEquivalentTo([]Id{"A", "B", "C", "D"}))
+			Expect(dist[2]).Should(BeEquivalentTo(4))
+			Expect(path[2]).Should(BeEquivalentTo([]Id{"A", "B", "E", "D"}))
 		})
 	})
 })
