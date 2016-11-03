@@ -11,8 +11,7 @@ type Id interface{}
 
 type Vertex interface {
 	Id() Id
-	Out() map[Id]float64
-	In() map[Id]float64
+	Edges() []Edge
 }
 
 type Edge interface {
@@ -127,7 +126,7 @@ func (graph *Graph) AddEdge(from Id, to Id, weight float64, e interface{}) error
 	return nil
 }
 
-func (graph *Graph) UpdateEdge(from Id, to Id, weight float64) error {
+func (graph *Graph) UpdateEdgeWeight(from Id, to Id, weight float64) error {
 	if weight == math.Inf(-1) {
 		return fmt.Errorf("-inf weight is reserved for internal usage")
 	}
@@ -193,28 +192,30 @@ func (graph *Graph) AddVertexWithEdges(v Vertex) error {
 	graph.egress[v.Id()] = make(map[Id]*edge)
 	graph.ingress[v.Id()] = make(map[Id]*edge)
 
-	for outTo, weight := range v.Out() {
+	for _, eachEdge := range v.Edges() {
+		from, to, weight := eachEdge.Get()
 		if weight == math.Inf(-1) {
 			return fmt.Errorf("-inf weight is reserved for internal usage")
 		}
-
-		graph.egress[v.Id()][outTo] = &edge{nil, weight, true, false}
-		if _, exists := graph.ingress[outTo]; !exists {
-			graph.ingress[outTo] = make(map[Id]*edge)
-		}
-		graph.ingress[outTo][v.Id()] = graph.egress[v.Id()][outTo]
-	}
-
-	for inFrom, weight := range v.In() {
-		if weight == math.Inf(-1) {
-			return fmt.Errorf("-inf weight is reserved for internal usage")
+		if from != v.Id() && to != v.Id() {
+			return fmt.Errorf("Edge from %v to %v is unrelated to the vertex %v", from, to, v.Id())
 		}
 
-		graph.ingress[v.Id()][inFrom] = &edge{nil, weight, true, false}
-		if _, exists := graph.egress[inFrom]; !exists {
-			graph.egress[inFrom] = make(map[Id]*edge)
+		if _, exists := graph.egress[to]; !exists {
+			graph.egress[to] = make(map[Id]*edge)
 		}
-		graph.egress[inFrom][v.Id()] = graph.ingress[v.Id()][inFrom]
+		if _, exists := graph.egress[from]; !exists {
+			graph.egress[from] = make(map[Id]*edge)
+		}
+		if _, exists := graph.ingress[from]; !exists {
+			graph.ingress[from] = make(map[Id]*edge)
+		}
+		if _, exists := graph.ingress[to]; !exists {
+			graph.ingress[to] = make(map[Id]*edge)
+		}
+
+		graph.egress[from][to] = &edge{eachEdge, weight, true, false}
+		graph.ingress[to][from] = graph.egress[from][to]
 	}
 
 	return nil

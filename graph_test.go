@@ -49,6 +49,11 @@ var _ = Describe("Tests of Graph structure", func() {
 			err = graph.AddVertexWithEdges(&myVertex{"T", map[Id]float64{}, map[Id]float64{"S": math.Inf(-1)}})
 			Expect(err).Should(HaveOccurred())
 		})
+
+		It("Given a graph, when add a vertex with unrelated edge, then get error", func() {
+			err := graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"T": math.Inf(-1)}, map[Id]float64{}})
+			Expect(err).Should(HaveOccurred())
+		})
 	})
 
 	Context("generic add/get vertex methods tests", func() {
@@ -202,20 +207,20 @@ var _ = Describe("Tests of Graph structure", func() {
 
 		It("Given a graph without S, when update an edge from S, then get an error", func() {
 			graph.AddVertex("T", "I am vertex T")
-			err := graph.UpdateEdge("S", "T", 10)
+			err := graph.UpdateEdgeWeight("S", "T", 10)
 			Expect(err).Should(HaveOccurred())
 		})
 
 		It("Given a graph without T, when update an edge to T, then get an error", func() {
 			graph.AddVertex("S", "I am vertex S")
-			err := graph.UpdateEdge("S", "T", 10)
+			err := graph.UpdateEdgeWeight("S", "T", 10)
 			Expect(err).Should(HaveOccurred())
 		})
 
 		It("Given a graph with S and T disconnected, when update an edge from S to T, then get nil error", func() {
 			graph.AddVertex("S", "I am vertex S")
 			graph.AddVertex("T", "I am vertex T")
-			err := graph.UpdateEdge("S", "T", 10)
+			err := graph.UpdateEdgeWeight("S", "T", 10)
 			Expect(err).Should(HaveOccurred())
 		})
 
@@ -223,7 +228,7 @@ var _ = Describe("Tests of Graph structure", func() {
 			graph.AddVertex("S", "I am vertex S")
 			graph.AddVertex("T", "I am vertex T")
 			graph.AddEdge("S", "T", 10, nil)
-			err := graph.UpdateEdge("S", "T", math.Inf(-1))
+			err := graph.UpdateEdgeWeight("S", "T", math.Inf(-1))
 			Expect(err).Should(HaveOccurred())
 		})
 
@@ -231,7 +236,7 @@ var _ = Describe("Tests of Graph structure", func() {
 			graph.AddVertex("S", "I am vertex S")
 			graph.AddVertex("T", "I am vertex T")
 			graph.AddEdge("S", "T", 10, nil)
-			err := graph.UpdateEdge("S", "T", 20)
+			err := graph.UpdateEdgeWeight("S", "T", 20)
 			Expect(err).ShouldNot(HaveOccurred())
 			edge, err := graph.GetEdgeWeight("S", "T")
 			Expect(err).ShouldNot(HaveOccurred())

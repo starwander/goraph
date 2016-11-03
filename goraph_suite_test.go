@@ -29,14 +29,30 @@ type myVertex struct {
 	inFrom map[Id]float64
 }
 
+type myEdge struct {
+	from   Id
+	to     Id
+	weight float64
+}
+
 func (vertex *myVertex) Id() Id {
 	return vertex.id
 }
 
-func (vertex *myVertex) Out() map[Id]float64 {
-	return vertex.outTo
+func (vertex *myVertex) Edges() (edges []Edge) {
+	edges = make([]Edge, len(vertex.outTo)+len(vertex.inFrom))
+	i := 0
+	for to, weight := range vertex.outTo {
+		edges[i] = &myEdge{vertex.id, to, weight}
+		i++
+	}
+	for from, weight := range vertex.inFrom {
+		edges[i] = &myEdge{from, vertex.id, weight}
+		i++
+	}
+	return
 }
 
-func (vertex *myVertex) In() map[Id]float64 {
-	return vertex.inFrom
+func (edge *myEdge) Get() (Id, Id, float64) {
+	return edge.from, edge.to, edge.weight
 }
