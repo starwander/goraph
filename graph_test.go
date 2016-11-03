@@ -51,7 +51,7 @@ var _ = Describe("Tests of Graph structure", func() {
 		})
 
 		It("Given a graph, when add a vertex with unrelated edge, then get error", func() {
-			err := graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"T": math.Inf(-1)}, map[Id]float64{}})
+			err := graph.AddVertexWithEdges(&testVertex{"X", &myVertex{"S", map[Id]float64{"T": 10}, map[Id]float64{}}})
 			Expect(err).Should(HaveOccurred())
 		})
 	})
@@ -232,7 +232,7 @@ var _ = Describe("Tests of Graph structure", func() {
 			Expect(err).Should(HaveOccurred())
 		})
 
-		It("Given a graph with  S and T connected, when add an edge from S to T again, then get an error", func() {
+		It("Given a graph with S and T connected, when add an edge from S to T again, then get an error", func() {
 			graph.AddVertex("S", "I am vertex S")
 			graph.AddVertex("T", "I am vertex T")
 			graph.AddEdge("S", "T", 10, nil)
@@ -384,3 +384,16 @@ var _ = Describe("Tests of Graph structure", func() {
 		})
 	})
 })
+
+type testVertex struct {
+	id     Id
+	vertex Vertex
+}
+
+func (test *testVertex) Id() Id {
+	return test.id
+}
+
+func (test *testVertex) Edges() (edges []Edge) {
+	return test.vertex.Edges()
+}
