@@ -6,6 +6,7 @@ import (
 	"math"
 )
 
+// Yen gets top k shortest loopless path between two vertex in the graph.
 // https://en.wikipedia.org/wiki/Yen%27s_algorithm
 func (graph *Graph) Yen(source, destination Id, topK int) ([]float64, [][]Id, error) {
 	var err error

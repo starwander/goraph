@@ -6,7 +6,8 @@ import (
 	"math"
 )
 
-// top k independent shortest path
+// Kisp gets top k shortest independent path between two vertex in the graph.
+// Independent means no vertex is shared between path.
 func (graph *Graph) Kisp(source, destination Id, topK int) ([]float64, [][]Id, error) {
 	var err error
 	var i, k int
