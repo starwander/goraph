@@ -8,7 +8,7 @@ import (
 	"math"
 )
 
-// Dijkstra gets the shortest path from the one vertex to all other vertices in the graph.
+// Dijkstra gets the shortest path from one vertex to all other vertices in the graph.
 // https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
 func (graph *Graph) Dijkstra(source Id) (dist map[Id]float64, prev map[Id]Id, err error) {
 	if _, exists := graph.vertices[source]; !exists {

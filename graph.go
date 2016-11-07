@@ -71,7 +71,7 @@ func (graph *Graph) GetVertex(id Id) (vertex interface{}, err error) {
 	return
 }
 
-// GetEdge get the edge between two vertices by input ids.
+// GetEdge gets the edge between the two vertices by input ids.
 // Try to get the edge from or to a vertex not in the graph will get an error.
 // Try to get the edge between two disconnected vertices will get an error.
 func (graph *Graph) GetEdge(from Id, to Id) (interface{}, error) {
@@ -90,7 +90,7 @@ func (graph *Graph) GetEdge(from Id, to Id) (interface{}, error) {
 	return nil, fmt.Errorf("Edge from %v to %v is not found", from, to)
 }
 
-// GetEdgeWeight get the weight of the edge between tow vertices by input ids.
+// GetEdgeWeight gets the weight of the edge between the two vertices by input ids.
 // Try to get the weight of the edge from or to a vertex not in the graph will get an error.
 // Try to get the weight of the edge between two disconnected vertices will get +Inf.
 func (graph *Graph) GetEdgeWeight(from Id, to Id) (float64, error) {
@@ -123,7 +123,7 @@ func (graph *Graph) AddVertex(id Id, v interface{}) error {
 	return nil
 }
 
-// AddEdge adds a new edge between vertices by the input.
+// AddEdgeadds a new edge between the vertices by the input ids.
 // Try to add an edge with -Inf weight will get an error.
 // Try to add an edge from or to a vertex not in the graph will get an error.
 // Try to add a duplicate edge will get an error.
@@ -150,7 +150,7 @@ func (graph *Graph) AddEdge(from Id, to Id, weight float64, e interface{}) error
 	return nil
 }
 
-// UpdateEdgeWeight updates the weight of the edge between vertices by the input.
+// UpdateEdgeWeight updates the weight of the edge between vertices by the input ids.
 // Try to update an edge with -Inf weight will get an error.
 // Try to update an edge from or to a vertex not in the graph will get an error.
 // Try to update an edge between disconnected vertices will get an error.
@@ -175,7 +175,7 @@ func (graph *Graph) UpdateEdgeWeight(from Id, to Id, weight float64) error {
 	return fmt.Errorf("Edge from %v to %v is not found", from, to)
 }
 
-// DeleteVertex deletes a vertex from the graph and gets the value of vertex.
+// DeleteVertex deletes a vertex from the graph and gets the value of the vertex.
 // Try to delete a vertex not in the graph will get an nil.
 func (graph *Graph) DeleteVertex(id Id) interface{} {
 	if vertex, exists := graph.vertices[id]; exists {
@@ -195,7 +195,7 @@ func (graph *Graph) DeleteVertex(id Id) interface{} {
 	return nil
 }
 
-// DeleteEdge deletes the edge between vertices by the input from the graph and gets the value of edge.
+// DeleteEdge deletes the edge between the vertices by the input id from the graph and gets the value of edge.
 // Try to delete an edge from or to a vertex not in the graph will get an error.
 // Try to delete an edge between disconnected vertices will get a nil.
 func (graph *Graph) DeleteEdge(from Id, to Id) interface{} {
@@ -256,7 +256,7 @@ func (graph *Graph) AddVertexWithEdges(v Vertex) error {
 	return nil
 }
 
-// CheckIntegrity checks if any edge connects unknown vertex.
+// CheckIntegrity checks if any edge connects to or from unknown vertex.
 // If the graph is integrate, nil is returned. Otherwise an error is returned.
 func (graph *Graph) CheckIntegrity() error {
 	for from, out := range graph.egress {
@@ -284,7 +284,7 @@ func (graph *Graph) CheckIntegrity() error {
 	return nil
 }
 
-// GetPathWeight gets the total weight along the path by input.
+// GetPathWeight gets the total weight along the path by input ids.
 // It will get -Inf if the input path is nil or empty.
 // It will get -Inf if the path contains vertex not in the graph.
 // It will get +Inf if the path contains vertices not connected.
