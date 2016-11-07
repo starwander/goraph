@@ -33,6 +33,7 @@ var _ = Describe("Tests of Graph structure", func() {
 			err := graph.AddVertexWithEdges(myVertex)
 			Expect(err).ShouldNot(HaveOccurred())
 			vertex, err := graph.GetVertex("S")
+			Expect(err).ShouldNot(HaveOccurred())
 			Expect(vertex).ShouldNot(BeNil())
 			Expect(vertex).Should(BeEquivalentTo(myVertex))
 		})
