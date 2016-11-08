@@ -17,27 +17,28 @@ Current implemented(&radic;) and planned(&times;) algorithms:
 |  Status   | &times; | &times; |     &times;     | &times;  |   &times;   |   &radic;   |    &radic;     |    &radic;    |   &times;   |     &times;      |      &times;      |
 ¹ With Fibonacci heap.
 
-BFS: breadth first search.
 
-DFS: depth first search.
+* BFS: breadth first search.
 
-TopologicalSort: is a linear ordering of a directed graph's vertices such that for every directed edge uv from vertex u to vertex v, u comes before v in the ordering.
+* DFS: depth first search.
 
-Kruskal: is a minimum-spanning-tree algorithm which finds an edge of the least possible weight that connects any two trees in the forest.
+* TopologicalSort: is a linear ordering of a directed graph's vertices such that for every directed edge uv from vertex u to vertex v, u comes before v in the ordering.
 
-Prim: is a greedy algorithm that finds a minimum spanning tree for a weighted undirected graph
+* Kruskal: is a minimum-spanning-tree algorithm which finds an edge of the least possible weight that connects any two trees in the forest.
 
-Dijkstra: computes shortest paths from a single source vertex to all of the other vertices in a graph with non-negative edge cost.
+* Prim: is a greedy algorithm that finds a minimum spanning tree for a weighted undirected graph
 
-Yen: computes K-shortest loopless paths between two vertex in a graph with non-negative edge cost.
+* Dijkstra: computes shortest paths from a single source vertex to all of the other vertices in a graph with non-negative edge cost.
 
-Kisp: computes K-shortest independent paths between two vertex in a graph with non-negative edge cost.
+* Yen: computes K-shortest loopless paths between two vertex in a graph with non-negative edge cost.
 
-BellmanFord: computes shortest paths from a single source vertex to all of the other vertices in a weighted digraph with positive or negative edge weights.
+* Kisp: computes K-shortest independent paths between two vertex in a graph with non-negative edge cost.
 
-FloydWarshall: computes all-pairs shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles).
+* BellmanFord: computes shortest paths from a single source vertex to all of the other vertices in a weighted digraph with positive or negative edge weights.
 
-EdmondsKarp: computes the maximum flow in a flow network(graph).
+* FloydWarshall: computes all-pairs shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles).
+
+* EdmondsKarp: computes the maximum flow in a flow network(graph).
 
 ##Requirements
 #####Download this package
