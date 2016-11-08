@@ -13,7 +13,7 @@ Current implemented(&radic;) and planned(&times;) algorithms:
 
 | Algorithm |   BFS   |   DFS   | TopologicalSort | Kruskal  |     Prim    |   Dijkstra  |       Yen      |     Kisp      | BellmanFord |  FloydWarshall   |    EdmondsKarp    |
 | :-------: | :-----: | :-----: | :-------------: | :------: | :---------: | :---------: | :------------: | :-----------: | :---------: | :--------------: | :---------------: |
-|  Complex  | O(V+E)  | O(V+E)  |      O(V+E)     | O(ElogE) | O(E+VlogV)¹ | O(E+VlogV)¹ | O(KV(E+VlogV)) | O(K(E+VlogV)) |    O(VE)    | O(V<sup>3</sup>) | O(VE<sup>2</sup>) |
+|  Complex  | O(V+E)  | O(V+E)  |      O(V+E)     | O(ElogE) | O(E+VlogV)¹ | O(E+VlogV)¹ | O(KV(E+VlogV)) |   O(KVlogV)   |    O(VE)    | O(V<sup>3</sup>) | O(VE<sup>2</sup>) |
 |  Status   | &times; | &times; |     &times;     | &times;  |   &times;   |   &radic;   |    &radic;     |    &radic;    |   &times;   |     &times;      |      &times;      |
 ¹ With Fibonacci heap.
 
