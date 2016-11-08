@@ -11,27 +11,33 @@ Goraph is NOT concurrent safe.
 
 Current implemented(&radic;) and planned(&times;) algorithms:
 
-&times; BFS:
+| Algorithm |   BFS   |   DFS   | TopologicalSort | Kruskal  |     Prim    |   Dijkstra  |       Yen      |     Kisp      | BellmanFord |  FloydWarshall   |    EdmondsKarp    |
+| :-------: | :-----: | :-----: | :-------------: | :------: | :---------: | :---------: | :------------: | :-----------: | :---------: | :--------------: | :---------------: |
+|  Complex  | O(V+E)  | O(V+E)  |      O(V+E)     | O(ElogE) | O(E+VlogV)¹ | O(E+VlogV)¹ | O(KV(E+VlogV)) | O(K(E+VlogV)) |    O(VE)    | O(V<sup>3</sup>) | O(VE<sup>2</sup>) |
+|  Status   | &times; | &times; |     &times;     | &times;  |   &times;   |   &radic;   |    &radic;     |    &radic;    |   &times;   |     &times;      |      &times;      |
+¹ With Fibonacci heap.
 
-&times; DFS:
+BFS: breadth first search.
 
-&times; TopologicalSort:
+DFS: depth first search.
 
-&times; Kruskal:
+TopologicalSort: is a linear ordering of a directed graph's vertices such that for every directed edge uv from vertex u to vertex v, u comes before v in the ordering.
 
-&times; Prim:
+Kruskal: is a minimum-spanning-tree algorithm which finds an edge of the least possible weight that connects any two trees in the forest.
 
-&radic; Dijkstra:
+Prim: is a greedy algorithm that finds a minimum spanning tree for a weighted undirected graph
 
-&radic; Yen:
+Dijkstra: computes shortest paths from a single source vertex to all of the other vertices in a graph with non-negative edge cost.
 
-&radic; Kisp:
+Yen: computes K-shortest loopless paths between two vertex in a graph with non-negative edge cost.
 
-&times; BellmanFord:
+Kisp: computes K-shortest independent paths between two vertex in a graph with non-negative edge cost.
 
-&times; FloydWarshall:
+BellmanFord: computes shortest paths from a single source vertex to all of the other vertices in a weighted digraph with positive or negative edge weights.
 
-&times; FordFulkerson:
+FloydWarshall: computes all-pairs shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles).
+
+EdmondsKarp: computes the maximum flow in a flow network(graph).
 
 ##Requirements
 #####Download this package
@@ -69,7 +75,7 @@ type Edge interface {
  - DisablePath: disables all the vertices in the path for further calculation.
  - Reset: enables all vertices and edges for further calculation.
 
-* Algorithem operations:
+* Algorithm operations:
  - Dijkstra: gets the shortest path from one vertex to all other vertices in the graph.
  - Yen: gets top k shortest loopless path between two vertex in the graph.
  - Kisp: gets top k shortest independent path between two vertex in the graph.
