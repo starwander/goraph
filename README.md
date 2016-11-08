@@ -17,6 +17,7 @@ Current implemented(&radic;) and planned(&times;) algorithms:
 |  Status   | &times; | &times; |     &times;     | &times;  |   &times;   |   &radic;   |    &radic;     |    &radic;    |   &times;   |     &times;      |      &times;      |
 ¹ With Fibonacci heap.
 
+##Algorithms Introduction
 
 * BFS: breadth first search.
 
@@ -46,7 +47,7 @@ Current implemented(&radic;) and planned(&times;) algorithms:
     go get github.com/EthanZhuang/GoFibonacciHeap
     go get github.com/EthanZhuang/goraph
 
-#####Implements Value interface of this package for all values going to be inserted by value interfaces
+#####Implements Vertex interface of this package if you want to use AddVertexWithEdges(optional):
 ```go
 type Vertex interface {
 	Id() Id
