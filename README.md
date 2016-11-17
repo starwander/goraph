@@ -1,8 +1,8 @@
 ## Golang Graph
-[![Build Status](https://travis-ci.org/EthanZhuang/goraph.svg?branch=master)](https://travis-ci.org/EthanZhuang/goraph)
-[![codecov](https://codecov.io/gh/EthanZhuang/goraph/branch/master/graph/badge.svg)](https://codecov.io/gh/EthanZhuang/goraph)
-[![Go Report Card](https://goreportcard.com/badge/github.com/EthanZhuang/goraph)](https://goreportcard.com/report/github.com/EthanZhuang/goraph)
-[![GoDoc](https://godoc.org/github.com/EthanZhuang/goraph?status.svg)](https://godoc.org/github.com/EthanZhuang/goraph)
+[![Build Status](https://travis-ci.org/starwander/goraph.svg?branch=master)](https://travis-ci.org/starwander/goraph)
+[![codecov](https://codecov.io/gh/starwander/goraph/branch/master/graph/badge.svg)](https://codecov.io/gh/starwander/goraph)
+[![Go Report Card](https://goreportcard.com/badge/github.com/starwander/goraph)](https://goreportcard.com/report/github.com/starwander/goraph)
+[![GoDoc](https://godoc.org/github.com/starwander/goraph?status.svg)](https://godoc.org/github.com/starwander/goraph)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 Goraph is a golang package provides basic graph structures and algorithms.
@@ -44,8 +44,8 @@ Current implemented(&radic;) and planned(&times;) algorithms:
 ##Requirements
 #####Download this package and its dependency
 
-    go get github.com/EthanZhuang/GoFibonacciHeap
-    go get github.com/EthanZhuang/goraph
+    go get github.com/starwander/GoFibonacciHeap
+    go get github.com/starwander/goraph
 
 #####Implements Vertex interface of this package if you want to use AddVertexWithEdges(optional):
 ```go
@@ -89,7 +89,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/EthanZhuang/goraph"
+	"github.com/starwander/goraph"
 )
 
 type myVertex struct {
@@ -213,7 +213,7 @@ func Kisp() {
 
 ## Reference
 
-[GoDoc](https://godoc.org/github.com/EthanZhuang/goraph)
+[GoDoc](https://godoc.org/github.com/starwander/goraph)
 
 ## LICENSE
 
