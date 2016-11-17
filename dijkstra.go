@@ -4,7 +4,7 @@ package goraph
 
 import (
 	"fmt"
-	"github.com/EthanZhuang/GoFibonacciHeap"
+	"github.com/starwander/GoFibonacciHeap"
 	"math"
 )
 
