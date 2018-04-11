@@ -91,18 +91,8 @@ var _ = Describe("Tests of Yen", func() {
 			Expect(dist[2]).Should(BeEquivalentTo(4))
 			Expect(path[2]).Should(BeEquivalentTo([]Id{"A", "B", "E", "D"}))
 		})
-	})
 
-	Context("bugfix test", func() {
-		BeforeEach(func() {
-			graph = NewGraph()
-		})
-
-		AfterEach(func() {
-			graph = nil
-		})
-
-		It("Issue reported by gsidebottom for missing path.", func() {
+		It("Support early stop when there are enough potential paths in each iteration", func() {
 			mygraph := NewGraph()
 			mygraph.AddVertex("0", nil)
 			mygraph.AddVertex("1", nil)
@@ -115,7 +105,39 @@ var _ = Describe("Tests of Yen", func() {
 			mygraph.AddEdge("2", "3", 1, nil)
 			mygraph.AddEdge("2", "4", 1, nil)
 			mygraph.AddEdge("3", "4", 1, nil)
-			dist, path, err := mygraph.Yen("0", "4", 5)
+			dist, path, err := mygraph.Yen("0", "4", 3)
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(dist[0]).Should(BeEquivalentTo(2))
+			Expect(path[0]).Should(BeEquivalentTo([]Id{"0", "2", "4"}))
+			Expect(dist[1]).Should(BeEquivalentTo(3))
+			Expect(path[1]).Should(BeEquivalentTo([]Id{"0", "1", "2", "4"}))
+			Expect(dist[2]).Should(BeEquivalentTo(3))
+			Expect(path[2]).Should(BeEquivalentTo([]Id{"0", "2", "3", "4"}))
+		})
+	})
+
+	Context("bugfix test", func() {
+		BeforeEach(func() {
+			graph = NewGraph()
+		})
+
+		AfterEach(func() {
+			graph = nil
+		})
+
+		It("Issue reported by gsidebottom for missing path.", func() {
+			graph.AddVertex("0", nil)
+			graph.AddVertex("1", nil)
+			graph.AddVertex("2", nil)
+			graph.AddVertex("3", nil)
+			graph.AddVertex("4", nil)
+			graph.AddEdge("0", "1", 1, nil)
+			graph.AddEdge("0", "2", 1, nil)
+			graph.AddEdge("1", "2", 1, nil)
+			graph.AddEdge("2", "3", 1, nil)
+			graph.AddEdge("2", "4", 1, nil)
+			graph.AddEdge("3", "4", 1, nil)
+			dist, path, err := graph.Yen("0", "4", 5)
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(dist[0]).Should(BeEquivalentTo(2))
 			Expect(path[0]).Should(BeEquivalentTo([]Id{"0", "2", "4"}))

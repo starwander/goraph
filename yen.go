@@ -36,7 +36,7 @@ func (graph *Graph) Yen(source, destination Id, topK int) ([]float64, [][]Id, er
 	distTopK[0] = dijkstraDist[destination]
 	pathTopK[0] = getPath(dijkstraPrev, destination)
 
-	for k = 1; k < topK; k++ {
+	for k = 1; k < topK; {
 		for i = 0; i < len(pathTopK[k-1])-1; i++ {
 			for j = 0; j < k; j++ {
 				if isShareRootPath(pathTopK[j], pathTopK[k-1][:i+1]) {
@@ -73,9 +73,20 @@ func (graph *Graph) Yen(source, destination Id, topK int) ([]float64, [][]Id, er
 		sort.Slice(potentials, func(i, j int) bool {
 			return potentials[i].dist < potentials[j].dist
 		})
-		distTopK[k] = potentials[0].dist
-		pathTopK[k] = potentials[0].path
-		potentials = potentials[1:]
+
+		if len(potentials) >= topK-k {
+			for l := 0; k < topK; l++ {
+				distTopK[k] = potentials[l].dist
+				pathTopK[k] = potentials[l].path
+				k++
+			}
+			break
+		} else {
+			distTopK[k] = potentials[0].dist
+			pathTopK[k] = potentials[0].path
+			potentials = potentials[1:]
+			k++
+		}
 	}
 
 	return distTopK, pathTopK, nil
