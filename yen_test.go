@@ -47,7 +47,7 @@ var _ = Describe("Tests of Yen", func() {
 		})
 
 		It("Given a graph without negative edge, when call yen api, then get the top k shortest paths from the source vertex to the destination vertex in the graph.", func() {
-			dist, path, err := graph.Yen("C", "H", 6)
+			dist, path, err := graph.Yen("C", "H", 9)
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(dist[0]).Should(BeEquivalentTo(5))
 			Expect(path[0]).Should(BeEquivalentTo([]Id{"C", "E", "F", "H"}))
@@ -55,12 +55,18 @@ var _ = Describe("Tests of Yen", func() {
 			Expect(path[1]).Should(BeEquivalentTo([]Id{"C", "E", "G", "H"}))
 			Expect(dist[2]).Should(BeEquivalentTo(8))
 			Expect(path[2]).Should(BeEquivalentTo([]Id{"C", "D", "F", "H"}))
-			Expect(dist[3]).Should(BeEquivalentTo(11))
-			Expect(path[3]).Should(BeEquivalentTo([]Id{"C", "D", "F", "G", "H"}))
-			Expect(dist[4]).Should(BeEquivalentTo(math.Inf(1)))
-			Expect(path[4]).Should(BeNil())
-			Expect(dist[5]).Should(BeEquivalentTo(math.Inf(1)))
-			Expect(path[5]).Should(BeNil())
+			Expect(dist[3]).Should(BeEquivalentTo(8))
+			Expect(path[3]).Should(BeEquivalentTo([]Id{"C", "E", "F", "G", "H"}))
+			Expect(dist[4]).Should(BeEquivalentTo(8))
+			Expect(path[4]).Should(BeEquivalentTo([]Id{"C", "E", "D", "F", "H"}))
+			Expect(dist[5]).Should(BeEquivalentTo(11))
+			Expect(path[5]).Should(BeEquivalentTo([]Id{"C", "D", "F", "G", "H"}))
+			Expect(dist[6]).Should(BeEquivalentTo(11))
+			Expect(path[6]).Should(BeEquivalentTo([]Id{"C", "E", "D", "F", "G", "H"}))
+			Expect(dist[7]).Should(BeEquivalentTo(math.Inf(1)))
+			Expect(path[7]).Should(BeNil())
+			Expect(dist[8]).Should(BeEquivalentTo(math.Inf(1)))
+			Expect(path[8]).Should(BeNil())
 		})
 
 		It("Given another graph without negative edge, when call yen api, then get the top k shortest paths from the source vertex to the destination vertex in the graph.", func() {
@@ -84,6 +90,41 @@ var _ = Describe("Tests of Yen", func() {
 			Expect(path[1]).Should(BeEquivalentTo([]Id{"A", "B", "C", "D"}))
 			Expect(dist[2]).Should(BeEquivalentTo(4))
 			Expect(path[2]).Should(BeEquivalentTo([]Id{"A", "B", "E", "D"}))
+		})
+	})
+
+	Context("bugfix test", func() {
+		BeforeEach(func() {
+			graph = NewGraph()
+		})
+
+		AfterEach(func() {
+			graph = nil
+		})
+
+		It("Issue reported by gsidebottom for missing path.", func() {
+			mygraph := NewGraph()
+			mygraph.AddVertex("0", nil)
+			mygraph.AddVertex("1", nil)
+			mygraph.AddVertex("2", nil)
+			mygraph.AddVertex("3", nil)
+			mygraph.AddVertex("4", nil)
+			mygraph.AddEdge("0", "1", 1, nil)
+			mygraph.AddEdge("0", "2", 1, nil)
+			mygraph.AddEdge("1", "2", 1, nil)
+			mygraph.AddEdge("2", "3", 1, nil)
+			mygraph.AddEdge("2", "4", 1, nil)
+			mygraph.AddEdge("3", "4", 1, nil)
+			dist, path, err := mygraph.Yen("0", "4", 5)
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(dist[0]).Should(BeEquivalentTo(2))
+			Expect(path[0]).Should(BeEquivalentTo([]Id{"0", "2", "4"}))
+			Expect(dist[1]).Should(BeEquivalentTo(3))
+			Expect(path[1]).Should(BeEquivalentTo([]Id{"0", "1", "2", "4"}))
+			Expect(dist[2]).Should(BeEquivalentTo(3))
+			Expect(path[2]).Should(BeEquivalentTo([]Id{"0", "2", "3", "4"}))
+			Expect(dist[3]).Should(BeEquivalentTo(4))
+			Expect(path[3]).Should(BeEquivalentTo([]Id{"0", "1", "2", "3", "4"}))
 		})
 	})
 })
