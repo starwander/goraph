@@ -22,9 +22,9 @@ var _ = Describe("Tests of Dijkstra", func() {
 		})
 
 		It("Given a graph without vertex X, when call dijkstra api with X, then get two nil and error", func() {
-			graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"A": 10, "B": 10}, map[Id]float64{}})
-			graph.AddVertexWithEdges(&myVertex{"A", map[Id]float64{}, map[Id]float64{"S": 10, "B": 5}})
-			graph.AddVertexWithEdges(&myVertex{"B", map[Id]float64{"A": 5}, map[Id]float64{"S": 10}})
+			graph.AddVertexWithEdges(&myVertex{"S", map[ID]float64{"A": 10, "B": 10}, map[ID]float64{}})
+			graph.AddVertexWithEdges(&myVertex{"A", map[ID]float64{}, map[ID]float64{"S": 10, "B": 5}})
+			graph.AddVertexWithEdges(&myVertex{"B", map[ID]float64{"A": 5}, map[ID]float64{"S": 10}})
 
 			dist, prev, err := graph.Dijkstra("X")
 			Expect(dist).Should(BeNil())
@@ -33,9 +33,9 @@ var _ = Describe("Tests of Dijkstra", func() {
 		})
 
 		It("Given a graph with negative edge, when call dijkstra api, then get two nil and error", func() {
-			graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"A": 10, "B": 10}, map[Id]float64{}})
-			graph.AddVertexWithEdges(&myVertex{"A", map[Id]float64{}, map[Id]float64{"S": 10, "B": -5}})
-			graph.AddVertexWithEdges(&myVertex{"B", map[Id]float64{"A": -5}, map[Id]float64{"S": 10}})
+			graph.AddVertexWithEdges(&myVertex{"S", map[ID]float64{"A": 10, "B": 10}, map[ID]float64{}})
+			graph.AddVertexWithEdges(&myVertex{"A", map[ID]float64{}, map[ID]float64{"S": 10, "B": -5}})
+			graph.AddVertexWithEdges(&myVertex{"B", map[ID]float64{"A": -5}, map[ID]float64{"S": 10}})
 
 			dist, prev, err := graph.Dijkstra("S")
 			Expect(dist).Should(BeNil())
@@ -47,14 +47,14 @@ var _ = Describe("Tests of Dijkstra", func() {
 	Context("algorithem test", func() {
 		BeforeEach(func() {
 			graph = NewGraph()
-			graph.AddVertexWithEdges(&myVertex{"S", map[Id]float64{"B": 14}, map[Id]float64{"A": 15, "B": 14, "C": 9}})
-			graph.AddVertexWithEdges(&myVertex{"A", map[Id]float64{"S": 15, "B": 5, "D": 20, "T": 44}, map[Id]float64{"B": 5, "D": 20, "T": 44}})
-			graph.AddVertexWithEdges(&myVertex{"B", map[Id]float64{"S": 14, "A": 5, "D": 30, "E": 18}, map[Id]float64{"S": 14, "A": 5, "D": 30, "E": 18}})
-			graph.AddVertexWithEdges(&myVertex{"C", map[Id]float64{"S": 9, "E": 24}, map[Id]float64{"E": 24}})
-			graph.AddVertexWithEdges(&myVertex{"D", map[Id]float64{"A": 20, "B": 30, "E": 2, "F": 11, "T": 16}, map[Id]float64{"A": 20, "B": 30, "E": 2, "F": 11, "T": 16}})
-			graph.AddVertexWithEdges(&myVertex{"E", map[Id]float64{"B": 18, "C": 24, "D": 2, "F": 6, "T": 19}, map[Id]float64{"B": 18, "C": 24, "D": 2, "F": 6, "T": 19}})
-			graph.AddVertexWithEdges(&myVertex{"F", map[Id]float64{"D": 11, "E": 6, "T": 6}, map[Id]float64{"D": 11, "E": 6, "T": 6}})
-			graph.AddVertexWithEdges(&myVertex{"T", map[Id]float64{"A": 44, "D": 16, "E": 19, "F": 6}, map[Id]float64{"A": 44, "D": 16, "E": 19, "F": 6}})
+			graph.AddVertexWithEdges(&myVertex{"S", map[ID]float64{"B": 14}, map[ID]float64{"A": 15, "B": 14, "C": 9}})
+			graph.AddVertexWithEdges(&myVertex{"A", map[ID]float64{"S": 15, "B": 5, "D": 20, "T": 44}, map[ID]float64{"B": 5, "D": 20, "T": 44}})
+			graph.AddVertexWithEdges(&myVertex{"B", map[ID]float64{"S": 14, "A": 5, "D": 30, "E": 18}, map[ID]float64{"S": 14, "A": 5, "D": 30, "E": 18}})
+			graph.AddVertexWithEdges(&myVertex{"C", map[ID]float64{"S": 9, "E": 24}, map[ID]float64{"E": 24}})
+			graph.AddVertexWithEdges(&myVertex{"D", map[ID]float64{"A": 20, "B": 30, "E": 2, "F": 11, "T": 16}, map[ID]float64{"A": 20, "B": 30, "E": 2, "F": 11, "T": 16}})
+			graph.AddVertexWithEdges(&myVertex{"E", map[ID]float64{"B": 18, "C": 24, "D": 2, "F": 6, "T": 19}, map[ID]float64{"B": 18, "C": 24, "D": 2, "F": 6, "T": 19}})
+			graph.AddVertexWithEdges(&myVertex{"F", map[ID]float64{"D": 11, "E": 6, "T": 6}, map[ID]float64{"D": 11, "E": 6, "T": 6}})
+			graph.AddVertexWithEdges(&myVertex{"T", map[ID]float64{"A": 44, "D": 16, "E": 19, "F": 6}, map[ID]float64{"A": 44, "D": 16, "E": 19, "F": 6}})
 			Expect(graph.CheckIntegrity()).ShouldNot(HaveOccurred())
 		})
 
@@ -63,7 +63,7 @@ var _ = Describe("Tests of Dijkstra", func() {
 		})
 
 		It("Given a non-negative edge graph, when call dijkstra api with source vertex, then get the shortest paths from the source vertices to all other vertex in the graph.", func() {
-			expectedDist := map[Id]float64{
+			expectedDist := map[ID]float64{
 				"S": 0,
 				"B": 14,
 				"A": 19,
@@ -73,7 +73,7 @@ var _ = Describe("Tests of Dijkstra", func() {
 				"T": 44,
 				"C": 56,
 			}
-			expectedPrev := map[Id]Id{
+			expectedPrev := map[ID]ID{
 				"S": nil,
 				"B": "S",
 				"A": "B",
@@ -94,7 +94,7 @@ var _ = Describe("Tests of Dijkstra", func() {
 		It("Given a graph with some edges disabled, when call dijkstra api with source vertex, then the disabled edges will not be calculated.", func() {
 			graph.egress["A"]["B"].enable = false
 			graph.egress["E"]["F"].enable = false
-			expectedDist := map[Id]float64{
+			expectedDist := map[ID]float64{
 				"S": 0,
 				"B": 14,
 				"A": 19,
@@ -104,7 +104,7 @@ var _ = Describe("Tests of Dijkstra", func() {
 				"T": 50,
 				"C": 56,
 			}
-			expectedPrev := map[Id]Id{
+			expectedPrev := map[ID]ID{
 				"S": nil,
 				"B": "S",
 				"A": "B",

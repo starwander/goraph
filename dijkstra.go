@@ -10,13 +10,13 @@ import (
 
 // Dijkstra gets the shortest path from one vertex to all other vertices in the graph.
 // https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-func (graph *Graph) Dijkstra(source Id) (dist map[Id]float64, prev map[Id]Id, err error) {
+func (graph *Graph) Dijkstra(source ID) (dist map[ID]float64, prev map[ID]ID, err error) {
 	if _, exists := graph.vertices[source]; !exists {
 		return nil, nil, fmt.Errorf("Vertex %v is not existed", source)
 	}
 
-	dist = make(map[Id]float64)
-	prev = make(map[Id]Id)
+	dist = make(map[ID]float64)
+	prev = make(map[ID]ID)
 	heap := fibHeap.NewFibHeap()
 
 	for id := range graph.vertices {
@@ -50,18 +50,18 @@ func (graph *Graph) Dijkstra(source Id) (dist map[Id]float64, prev map[Id]Id, er
 	return
 }
 
-func getPath(prev map[Id]Id, lastNode Id) (path []Id) {
+func getPath(prev map[ID]ID, lastNode ID) (path []ID) {
 	prevNode := prev[lastNode]
 	if prevNode == nil {
 		return nil
 	}
 
-	reversePath := []Id{lastNode}
+	reversePath := []ID{lastNode}
 	for ; prevNode != nil; prevNode = prev[prevNode] {
 		reversePath = append(reversePath, prevNode)
 	}
 
-	path = make([]Id, len(reversePath))
+	path = make([]ID, len(reversePath))
 	for index, node := range reversePath {
 		path[len(reversePath)-index-1] = node
 	}
