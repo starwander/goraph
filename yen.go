@@ -9,22 +9,22 @@ import (
 
 type potential struct {
 	dist float64
-	path []Id
+	path []ID
 }
 
 // Yen gets top k shortest loopless path between two vertex in the graph.
 // https://en.wikipedia.org/wiki/Yen%27s_algorithm
-func (graph *Graph) Yen(source, destination Id, topK int) ([]float64, [][]Id, error) {
+func (graph *Graph) Yen(source, destination ID, topK int) ([]float64, [][]ID, error) {
 	var err error
 	var i, j, k int
-	var dijkstraDist map[Id]float64
-	var dijkstraPrev map[Id]Id
+	var dijkstraDist map[ID]float64
+	var dijkstraPrev map[ID]ID
 	var existed bool
 	var spurWeight float64
-	var spurPath []Id
+	var spurPath []ID
 	var potentials []potential
 	distTopK := make([]float64, topK)
-	pathTopK := make([][]Id, topK)
+	pathTopK := make([][]ID, topK)
 	for i := 0; i < topK; i++ {
 		distTopK[i] = math.Inf(1)
 	}
@@ -92,7 +92,7 @@ func (graph *Graph) Yen(source, destination Id, topK int) ([]float64, [][]Id, er
 	return distTopK, pathTopK, nil
 }
 
-func isShareRootPath(path, rootPath []Id) bool {
+func isShareRootPath(path, rootPath []ID) bool {
 	if len(path) < len(rootPath) {
 		return false
 	}
@@ -100,7 +100,7 @@ func isShareRootPath(path, rootPath []Id) bool {
 	return isSamePath(path[:len(rootPath)], rootPath)
 }
 
-func isSamePath(path1, path2 []Id) bool {
+func isSamePath(path1, path2 []ID) bool {
 	if len(path1) != len(path2) {
 		return false
 	}
@@ -114,8 +114,8 @@ func isSamePath(path1, path2 []Id) bool {
 	return true
 }
 
-func mergePath(path1, path2 []Id) []Id {
-	newPath := []Id{}
+func mergePath(path1, path2 []ID) []ID {
+	newPath := []ID{}
 	newPath = append(newPath, path1...)
 	newPath = append(newPath, path2...)
 

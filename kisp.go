@@ -8,13 +8,13 @@ import (
 
 // Kisp gets top k shortest independent path between two vertex in the graph.
 // Independent means no vertex is shared between path.
-func (graph *Graph) Kisp(source, destination Id, topK int) ([]float64, [][]Id, error) {
+func (graph *Graph) Kisp(source, destination ID, topK int) ([]float64, [][]ID, error) {
 	var err error
 	var i, k int
-	var dijkstraDist map[Id]float64
-	var dijkstraPrev map[Id]Id
+	var dijkstraDist map[ID]float64
+	var dijkstraPrev map[ID]ID
 	distTopK := make([]float64, topK)
-	pathTopK := make([][]Id, topK)
+	pathTopK := make([][]ID, topK)
 	for i := 0; i < topK; i++ {
 		distTopK[i] = math.Inf(1)
 	}

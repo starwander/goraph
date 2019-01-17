@@ -24,18 +24,18 @@ var _ = Describe("Test initialization", func() {
 })
 
 type myVertex struct {
-	id     Id
-	outTo  map[Id]float64
-	inFrom map[Id]float64
+	id     ID
+	outTo  map[ID]float64
+	inFrom map[ID]float64
 }
 
 type myEdge struct {
-	from   Id
-	to     Id
+	from   ID
+	to     ID
 	weight float64
 }
 
-func (vertex *myVertex) Id() Id {
+func (vertex *myVertex) ID() ID {
 	return vertex.id
 }
 
@@ -53,6 +53,6 @@ func (vertex *myVertex) Edges() (edges []Edge) {
 	return
 }
 
-func (edge *myEdge) Get() (Id, Id, float64) {
+func (edge *myEdge) Get() (ID, ID, float64) {
 	return edge.from, edge.to, edge.weight
 }
