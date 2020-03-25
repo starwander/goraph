@@ -50,12 +50,12 @@ Current implemented(&radic;) and planned(&times;) algorithms:
 #####Implements Vertex interface of this package if you want to use AddVertexWithEdges(optional):
 ```go
 type Vertex interface {
-	Id() Id
+	ID() ID
 	Edges() []Edge
 }
 
 type Edge interface {
-	Get() (from Id, to Id, weight float64)
+	Get() (from ID, to ID, weight float64)
 }
 ```
 ## Supported Operations
@@ -104,7 +104,7 @@ type myEdge struct {
 	weight float64
 }
 
-func (vertex *myVertex) Id() goraph.Id {
+func (vertex *myVertex) ID() goraph.ID {
 	return vertex.id
 }
 
@@ -122,7 +122,7 @@ func (vertex *myVertex) Edges() (edges []goraph.Edge) {
 	return
 }
 
-func (edge *myEdge) Get() (goraph.Id, goraph.Id, float64) {
+func (edge *myEdge) Get() (goraph.ID, goraph.ID, float64) {
 	return edge.from, edge.to, edge.weight
 }
 
